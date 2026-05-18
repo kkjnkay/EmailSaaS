@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.sidebar {
+  width: 70px;
+  background-color: white;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  gap: 25px;
+}
+
+.sidebar-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #444;
+}
+
+.campaign-list {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.campaign-card {
+  background-color: white;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.campaign-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.progress-bar {
+  margin-top: 6px;
+  width: 150px;
+  height: 6px;
+  background-color: #eee;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #4caf50;
+}

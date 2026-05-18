@@ -1,0 +1,109 @@
+.unibox-container {
+  display: flex;
+  height: 100vh;
+}
+
+.unibox-main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.unibox-header {
+  margin-bottom: 10px;
+}
+
+.tab-switch {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tab-switch button {
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #eee;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab-switch button.active {
+  background-color: #0077ff;
+  color: white;
+  border-color: #0077ff;
+}
+
+.unibox-body {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.unibox-list {
+  width: 40%;
+  max-height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+  padding-right: 10px;
+}
+
+.unibox-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.unibox-item.selected {
+  background-color: #f0f8ff;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.received-at {
+  font-size: 0.85em;
+  color: #777;
+  margin-left: 10px;
+}
+
+.unibox-snippet {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.unibox-to {
+  font-size: 0.85em;
+  color: #999;
+}
+
+.unibox-detail {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.reply-header {
+  margin-bottom: 10px;
+}
+
+.reply-body,
+.original-body {
+  background-color: #f4f4f4;
+  padding: 12px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  margin-bottom: 20px;
+}
+
+.unibox-tabs button.active {
+  background-color: #d9f0ff;
+  font-weight: bold;
+}
