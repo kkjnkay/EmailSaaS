@@ -1,75 +1,33 @@
-import React, { useState } from 'react';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider
-} from 'firebase/auth';
-import { auth } from '../firebase';
-import '../styles/App.css';
+import React from 'react';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../firebase';
+import '../styles/landing.css';
 
-const LandingPage = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleAuth = async (type) => {
-    try {
-      if (type === 'login') {
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-      }
-      onLogin();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      onLogin();
-    } catch (err) {
-      alert(err.message);
-    }
+const LandingPage = () => {
+  const signIn = () => {
+    signInWithPopup(auth, provider).catch(console.error);
   };
 
   return (
     <div className="landing-page">
-      <h1>EmailSaaS</h1>
-      <p>Manage your outreach campaigns.</p>
-
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        className="input"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        className="input"
-      />
-
-      <div className="landing-buttons">
-        <button className="login-btn" onClick={() => handleAuth('login')}>Login</button>
-        <button className="register-btn" onClick={() => handleAuth('register')}>Register</button>
-      </div>
-
-      <div className="google-section">
-        <p>or</p>
-        <button className="google-btn" onClick={handleGoogleLogin}>
-          <img
-            src="https://developers.google.com/identity/images/g-logo.png"
-            alt="Google"
-            className="google-icon"
+      <div className="landing-form-container">
+        {/* Іконка бренду */}
+        <div style={{ fontSize: '48px', marginBottom: '20px' }}>🚀</div>
+        
+        <h1>UniSync</h1>
+        <p>Автоматизуй розподіл навантаження за секунди</p>
+        
+        <button className="google-btn" onClick={signIn}>
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" 
+            alt="Google" style={{ width: '20px' }} 
           />
-          Sign in with Google
+          Продовжити з Google
         </button>
+
+        <p style={{ fontSize: '12px', marginTop: '24px', color: '#94a3b8' }}>
+          Входячи в систему, ви погоджуєтесь з правилами використання сервісу.
+        </p>
       </div>
     </div>
   );

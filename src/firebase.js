@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'; // 🔥 Додали GoogleAuthProvider
 import { getFirestore } from "firebase/firestore";
-import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAoiCizZsEHQWxcCWsx9qah7tGZJdMk920",
@@ -16,4 +15,4 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const functions = getFunctions(app);
+export const provider = new GoogleAuthProvider(); // 🔥 Додали експорт provider

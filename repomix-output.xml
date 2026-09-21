@@ -1,0 +1,3575 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+backend/package.json
+backend/server.js
+backend/utils/sendEmail.js
+package.json
+public/favicon.ico
+public/index.html
+public/logo192.png
+public/logo512.png
+public/manifest.json
+public/robots.txt
+README.md
+src/App.js
+src/App.test.js
+src/components/AddCampaignForm.js
+src/components/AddEmailForm.js
+src/components/CampaignCard.js
+src/components/CampaignList.js
+src/components/CampaignOptions.js
+src/components/EmailCard.js
+src/components/EmailList.js
+src/components/GmailHelpModal.js
+src/components/LeadsTable.js
+src/components/LeadsUploader.js
+src/components/Modal.js
+src/components/SendHistory.js
+src/components/SettingsSidebar.js
+src/components/Sidebar.js
+src/firebase.js
+src/index.css
+src/index.js
+src/logo.svg
+src/pages/AllLeadsPage.js
+src/pages/CampaignSettingsPage.js
+src/pages/CampaignsPage.js
+src/pages/EmailsPage.js
+src/pages/LandingPage.js
+src/reportWebVitals.js
+src/setupTests.js
+src/styles/components.css
+src/styles/landing.css
+src/styles/layout.css
+src/styles/variables.css
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/components/GmailHelpModal.js">
+import React, { useState, useEffect } from 'react';
+
+const GmailHelpModal = ({ onClose }) => {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(onClose, 250); // Чекаємо завершення анімації
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  return (
+    <>
+      <style>
+        {`
+          @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          @keyframes modalExit {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.9) translateY(20px); }
+          }
+          @keyframes backdropEnter {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
+          }
+          @keyframes backdropExit {
+            from { opacity: 1; backdrop-filter: blur(8px); }
+            to { opacity: 0; backdrop-filter: blur(0px); }
+          }
+        `}
+      </style>
+
+      <div 
+        onClick={handleClose} 
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(15, 23, 42, 0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 9999,
+          animation: `${isClosing ? 'backdropExit' : 'backdropEnter'} 0.25s ease-out forwards`
+        }}
+      >
+        <div 
+          onClick={e => e.stopPropagation()} 
+          style={{
+            width: '100%', maxWidth: '500px',
+            background: '#ffffff',
+            borderRadius: '24px',
+            padding: '40px 32px 32px',
+            position: 'relative',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(79, 70, 229, 0.1)',
+            animation: `${isClosing ? 'modalExit' : 'modalEnter'} 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards`
+          }}
+        >
+          {/* Літаюча іконка */}
+          <div style={{
+            position: 'absolute', top: '-30px', left: '50%', transform: 'translateX(-50%)',
+            width: '64px', height: '64px',
+            background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+            borderRadius: '18px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white',
+            boxShadow: '0 10px 25px rgba(16, 185, 129, 0.4)',
+            rotate: '-3deg'
+          }}>
+            <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </div>
+          
+          {/* Кнопка закриття */}
+          <button 
+            onClick={handleClose}
+            style={{
+              position: 'absolute', top: '20px', right: '20px',
+              background: '#f1f5f9', border: 'none',
+              width: '32px', height: '32px', borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-muted)', cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.color = '#0f172a'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+          >
+            ✕
+          </button>
+
+          <div style={{ textAlign: 'center', marginBottom: '24px', marginTop: '10px' }}>
+            <h3 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--bg-sidebar)', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
+              Як отримати пароль?
+            </h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', margin: 0 }}>
+              Коротка інструкція для підключення Gmail
+            </p>
+          </div>
+
+          <ol style={{ paddingLeft: '20px', margin: '0 0 24px 0', lineHeight: '1.7', color: 'var(--text-main)', fontSize: '14px' }}>
+            <li style={{ marginBottom: '8px' }}>Перейдіть у налаштування свого <strong>Google Акаунту</strong> (myaccount.google.com).</li>
+            <li style={{ marginBottom: '8px' }}>Відкрийте розділ <strong>"Безпека" (Security)</strong>.</li>
+            <li style={{ marginBottom: '8px' }}>Переконайтеся, що у вас увімкнена <strong>Двоетапна перевірка</strong>.</li>
+            <li style={{ marginBottom: '8px' }}>У рядку пошуку вгорі введіть <strong>"Паролі додатків" (App passwords)</strong>.</li>
+            <li style={{ marginBottom: '8px' }}>Створіть новий пароль, назвавши його "UniSync".</li>
+            <li><strong>Скопіюйте згенерований 16-значний код</strong> та вставте його при додаванні пошти, попередньо прибравши пробіли між цифрами.</li>
+          </ol>
+
+          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', padding: '16px', borderRadius: '12px', fontSize: '13px', color: '#92400e', display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <span style={{ fontSize: '20px' }}>⚠️</span>
+            <div>
+              <strong>Важливо:</strong> Google покаже цей пароль лише один раз. Його не потрібно запам'ятовувати, просто скопіюйте і вставте у нашу систему.
+            </div>
+          </div>
+
+          <button 
+            onClick={handleClose}
+            style={{ 
+              width: '100%', padding: '14px', marginTop: '24px',
+              background: '#f1f5f9', color: 'var(--text-main)', 
+              border: 'none', borderRadius: '12px', 
+              fontSize: '15px', fontWeight: '700', cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = '#e2e8f0'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#f1f5f9'; }}
+          >
+            Зрозуміло
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default GmailHelpModal;
+</file>
+
+<file path="src/components/SendHistory.js">
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+
+const SendHistory = ({ campaignId }) => {
+  const [logs, setLogs] = useState([]);
+  const [expandedId, setExpandedId] = useState(null);
+
+  useEffect(() => {
+    // Шукаємо логи тільки для цієї кампанії
+    const q = query(
+      collection(db, 'send_logs'),
+      where('campaignId', '==', campaignId),
+      where('ownerUid', '==', auth.currentUser?.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedLogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Сортуємо на клієнті від новіших до старіших, щоб уникнути помилок з відсутніми індексами у Firestore
+      fetchedLogs.sort((a, b) => {
+        const timeA = a.sentAt?.toMillis() || Date.now();
+        const timeB = b.sentAt?.toMillis() || Date.now();
+        return timeB - timeA;
+      });
+      setLogs(fetchedLogs);
+    });
+
+    return () => unsubscribe();
+  }, [campaignId]);
+
+  const toggleExpand = (id) => {
+    setExpandedId(prev => (prev === id ? null : id));
+  };
+
+  if (logs.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)', background: '#fff', borderRadius: 'var(--radius-lg)', border: '1px dashed #cbd5e1' }}>
+        <span style={{ fontSize: '40px', display: 'block', marginBottom: '15px' }}>📭</span>
+        <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '20px' }}>Історія порожня</h3>
+        <p style={{ marginTop: '8px' }}>Ви ще не відправляли листи в рамках цієї кампанії.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: '#fff', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+        <thead>
+          <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+            <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: '600', fontSize: '13px', textTransform: 'uppercase' }}>Дата та час</th>
+            <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: '600', fontSize: '13px', textTransform: 'uppercase' }}>Отримувач</th>
+            <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: '600', fontSize: '13px', textTransform: 'uppercase' }}>Email</th>
+            <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: '600', fontSize: '13px', textTransform: 'uppercase' }}>Статус</th>
+            <th style={{ padding: '16px 20px', textAlign: 'right' }}></th>
+          </tr>
+        </thead>
+        <tbody>
+          {logs.map((log) => {
+            const isExpanded = expandedId === log.id;
+            const dateStr = log.sentAt ? log.sentAt.toDate().toLocaleString('uk-UA', {
+              day: '2-digit', month: '2-digit', year: 'numeric',
+              hour: '2-digit', minute: '2-digit'
+            }) : 'Щойно';
+
+            return (
+              <React.Fragment key={log.id}>
+                <tr 
+                  style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.2s', cursor: 'pointer', backgroundColor: isExpanded ? '#f8fafc' : 'white' }} 
+                  onClick={() => toggleExpand(log.id)}
+                  onMouseOver={(e) => !isExpanded && (e.currentTarget.style.backgroundColor = '#f8fafc')}
+                  onMouseOut={(e) => !isExpanded && (e.currentTarget.style.backgroundColor = 'white')}
+                >
+                  <td style={{ padding: '16px 20px', fontSize: '14px', color: 'var(--text-muted)' }}>{dateStr}</td>
+                  <td style={{ padding: '16px 20px', fontWeight: '600', color: 'var(--text-main)' }}>{log.recipientName}</td>
+                  <td style={{ padding: '16px 20px', color: 'var(--text-muted)', fontSize: '14px' }}>{log.recipientEmail}</td>
+                  <td style={{ padding: '16px 20px' }}>
+                    <span style={{ color: '#047857', fontWeight: 'bold', fontSize: '12px', background: '#d1fae5', padding: '4px 10px', borderRadius: '20px' }}>
+                      ✅ Надіслано
+                    </span>
+                  </td>
+                  <td style={{ padding: '16px 20px', textAlign: 'right' }}>
+                    <span style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '14px' }}>
+                      {isExpanded ? 'Згорнути ▲' : 'Переглянути ▼'}
+                    </span>
+                  </td>
+                </tr>
+                
+                {/* 📝 Розгорнутий вигляд самого листа */}
+                {isExpanded && (
+                  <tr>
+                    <td colSpan="5" style={{ padding: '0', background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                      <div style={{ padding: '24px 40px', borderLeft: '4px solid var(--primary)', animation: 'fadeIn 0.3s ease-out' }}>
+                        <h4 style={{ margin: '0 0 15px 0', color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Вміст надісланого листа:</h4>
+                        <div 
+                          style={{ background: 'white', padding: '24px', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: 'var(--shadow-sm)' }}
+                          dangerouslySetInnerHTML={{ __html: log.htmlContent }} 
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default SendHistory;
+</file>
+
+<file path="src/styles/components.css">
+/* Фікс вирівнювання для шапок сторінок */
+.campaigns-header, .leads-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* Ефект Glassmorphism для карток */
+.campaign-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.campaign-card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: var(--shadow-hover);
+  border-color: #cbd5e1;
+}
+
+/* Красиві кнопки з мікро-анімацією */
+button {
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.add-button, .login-btn, .save-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, #3730a3 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.add-button:hover, .login-btn:hover, .save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+}
+
+/* Фікс таблиць (щоб не були кривими) */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #e2e8f0;
+}
+
+th {
+  background: #f8fafc;
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Інпути стали акуратнішими */
+.search-input, input[type="text"], input[type="email"], input[type="password"] {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background: #f8fafc;
+  transition: var(--transition);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-input:focus, input:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+/* Зона завантаження файлів (Dropzone) */
+.upload-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 40px 20px;
+  text-align: center;
+  background-color: var(--bg-main);
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.upload-zone:hover {
+  border-color: var(--primary);
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+/* Робимо стандартний інпут невидимим, але він покриває всю площу */
+.upload-zone input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.upload-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.upload-subtext {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Красивий чекбокс */
+.checkbox-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.checkbox-wrapper:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-md);
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* Стан завантаження */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 15px;
+}
+</file>
+
+<file path="src/styles/landing.css">
+/* src/styles/landing.css */
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #e2e8f0 100%);
+  padding: 20px;
+}
+
+.landing-form-container {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  padding: 48px;
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-page h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+  letter-spacing: -1.5px;
+}
+
+.landing-page p {
+  color: #64748b;
+  margin-bottom: 32px;
+  font-size: 16px;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.google-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+</file>
+
+<file path="src/styles/layout.css">
+/* src/styles/layout.css */
+.main-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content-container {
+  flex: 1;
+  padding: 30px 40px;
+  overflow-y: auto;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 80px;
+  background-color: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+  gap: 30px;
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.sidebar-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  align-items: center;
+}
+
+.sidebar-icon {
+  font-size: 22px;
+  cursor: pointer;
+  color: #94a3b8; /* Приглушений колір для неактивних */
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.sidebar-icon:hover {
+  background-color: #1e293b;
+  color: var(--primary);
+  transform: scale(1.05);
+}
+
+.sidebar-icon.active {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+}
+
+/* Тултипи для меню */
+.tooltip-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tooltip-text {
+  position: absolute;
+  left: 70px;
+  background-color: var(--text-main);
+  color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-10px);
+  transition: var(--transition);
+  z-index: 100;
+}
+
+.tooltip-container:hover .tooltip-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Головний контейнер для сторінок Кампаній та Пошт */
+.campaign-list {
+  flex: 1;
+  padding: 40px 60px; /* Щедрі відступи: 40px зверху/знизу, 60px з боків */
+  overflow-y: auto;
+  background-color: var(--bg-main);
+  animation: fadeIn 0.4s ease-out;
+  box-sizing: border-box;
+}
+
+/* Обмежуємо ширину контенту, щоб він не розповзався на надшироких екранах */
+.campaign-list > .campaigns-header,
+.campaign-list > .campaign-card,
+.campaign-list > p {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Робимо відступ між кнопкою "Додати" та заголовком більш збалансованим */
+.campaigns-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* Сторінка налаштувань кампанії */
+.campaign-settings {
+  flex: 1;
+  padding: 40px 60px;
+  overflow-y: auto;
+  background-color: var(--bg-main);
+  animation: fadeIn 0.4s ease-out;
+  box-sizing: border-box;
+}
+
+.campaign-settings-inner {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Кнопка повернення назад */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.back-link:hover {
+  color: var(--primary);
+  transform: translateX(-4px);
+}
+
+/* Сучасні вкладки (Tabs) */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.tab:hover {
+  color: var(--text-main);
+}
+
+.tab.active {
+  border-bottom-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Контейнер для вмісту вкладок */
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Відступ між завантажувачем файлу та таблицею лідів */
+}
+</file>
+
+<file path="src/styles/variables.css">
+:root {
+  /* Сучасна палітра (Indigo & Slate) */
+  --bg-main: #f8fafc;
+  --bg-sidebar: #0f172a;
+  --bg-card: rgba(255, 255, 255, 0.8); /* Напівпрозорість для ефекту скла */
+  
+  --primary: #4f46e5; /* Сучасний індиго */
+  --primary-hover: #4338ca;
+  --success: #10b981;
+  --danger: #ef4444;
+  
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  
+  /* М'які, об'ємні тіні замість плоских */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.01);
+  --shadow-hover: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-main);
+  background-image: radial-gradient(circle at 50% 0%, #ffffff 0%, transparent 70%); /* Легке світло зверху */
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+backend/serviceAccountKey.json
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+</file>
+
+<file path="backend/package.json">
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "nodemailer": "^7.0.13"
+  }
+}
+</file>
+
+<file path="backend/server.js">
+const express = require('express');
+const cors = require('cors');
+const nodemailer = require('nodemailer');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// 🔥 НОВЕ: Ендпоінт для перевірки підключення (працює з AddEmailForm.js)
+app.post('/check-email', async (req, res) => {
+    const { email, appPassword } = req.body;
+
+    if (!email || !appPassword) {
+        return res.status(400).send({ success: false, error: 'Введіть email та пароль' });
+    }
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: email,
+                pass: appPassword 
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        // verify() намагається залогінитись на SMTP сервер
+        await transporter.verify();
+        
+        console.log(`✅ Підключення успішне для: ${email}`);
+        res.status(200).send({ success: true, message: 'З\'єднання успішне' });
+    } catch (error) {
+        console.error(`❌ Помилка перевірки пошти ${email}:`, error.message);
+        res.status(401).send({ success: false, error: error.message });
+    }
+});
+
+// Твій існуючий ендпоінт для відправки розсилки
+app.post('/api/send-single', async (req, res) => {
+    const { senderAccount, subject, emailData } = req.body;
+
+    if (!senderAccount || !senderAccount.email || !senderAccount.smtpPassword) {
+        console.error('❌ Помилка: Неповні дані аккаунта відправника у запиті.');
+        return res.status(400).send({ 
+            success: false, 
+            error: 'Відсутні обов\'язкові дані авторизації (email або smtpPassword) в БД.' 
+        });
+    }
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: senderAccount.smtpHost || 'smtp.gmail.com',
+            port: parseInt(senderAccount.smtpPort) || 465,
+            secure: parseInt(senderAccount.smtpPort) === 465, 
+            auth: {
+                user: senderAccount.email,
+                pass: senderAccount.smtpPassword 
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        await transporter.sendMail({
+            from: `"${senderAccount.firstName || ''} ${senderAccount.lastName || ''}".trim() || 'Розподіл навантаження' <${senderAccount.email}>`,
+            to: emailData.to,
+            subject: subject,
+            html: emailData.htmlBody
+        });
+
+        console.log(`✅ Лист успішно надіслано на адресу: ${emailData.to}`);
+        res.status(200).send({ success: true, message: 'Лист успішно надіслано' });
+
+    } catch (error) {
+        console.error(`❌ Помилка SMTP при спробі відправки для ${emailData.to}:`, error);
+        res.status(500).send({ 
+            success: false, 
+            error: error.message,
+            code: error.code
+        });
+    }
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`==================================================`);
+    console.log(`🚀 Бекенд розсилки EmailSaaS успішно запущено!`);
+    console.log(`📡 Сервер очікує на запити за адресою: http://localhost:${PORT}`);
+    console.log(`==================================================`);
+});
+</file>
+
+<file path="backend/utils/sendEmail.js">
+const nodemailer = require('nodemailer');
+
+async function sendEmail({ smtpHost, smtpPort, smtpUser, smtpPass, to, subject, htmlBody }) {
+  const transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: parseInt(smtpPort),
+    secure: parseInt(smtpPort) === 465,
+    auth: {
+      user: smtpUser,
+      pass: smtpPass,
+    },
+  });
+
+  await transporter.sendMail({
+    from: smtpUser,
+    to,
+    subject,
+    html: htmlBody, // Відправляємо HTML замість звичайного тексту
+  });
+}
+
+module.exports = sendEmail;
+</file>
+
+<file path="package.json">
+{
+  "name": "email-saas",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "firebase": "^11.10.0",
+    "papaparse": "^5.5.3",
+    "react": "^19.1.0",
+    "react-datepicker": "^8.4.0",
+    "react-dom": "^19.1.0",
+    "react-firebase-hooks": "^5.1.1",
+    "react-router-dom": "^7.6.3",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11"
+  }
+}
+</file>
+
+<file path="public/index.html">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>UniSync | Навантаження викладачів</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+</file>
+
+<file path="public/manifest.json">
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+</file>
+
+<file path="public/robots.txt">
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+</file>
+
+<file path="README.md">
+# Getting Started with Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+### `npm test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+</file>
+
+<file path="src/App.js">
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import './styles/variables.css';
+import './styles/layout.css';
+import './styles/components.css';
+import './styles/landing.css';
+import LandingPage from "./pages/LandingPage";
+import CampaignsPage from "./pages/CampaignsPage";
+import EmailsPage from "./pages/EmailsPage";
+import LeadsPage from "./pages/AllLeadsPage";
+import CampaignSettingsPage from './pages/CampaignSettingsPage';
+import { auth } from "./firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+
+function App() {
+  const [user] = useAuthState(auth);
+
+  return (
+    <Router>
+      <Routes>
+        {!user ? (
+          <Route path="*" element={<LandingPage />} />
+        ) : (
+          <>
+            <Route path="/" element={<Navigate to="/campaigns" />} />
+            <Route path="/campaigns" element={<CampaignsPage />} />
+            <Route path="/emails" element={<EmailsPage />} />
+            <Route path="/leads" element={<LeadsPage />} />
+            <Route path="/campaigns/:id/settings" element={<CampaignSettingsPage />} />
+          </>
+        )}
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+</file>
+
+<file path="src/App.test.js">
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+</file>
+
+<file path="src/components/AddCampaignForm.js">
+import React, { useState } from 'react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+
+
+const AddCampaignForm = ({ onSuccess }) => {
+  const [name, setName] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    try {
+      await addDoc(collection(db, 'campaigns'), {
+        name,
+        status: 'draft',
+        leadsCount: 0,
+        sent: 0,
+        replies: 0,
+        ownerUid: auth.currentUser.uid,
+        createdAt: serverTimestamp(),
+      });
+
+      setName('');
+      onSuccess();
+    } catch (err) {
+      console.error('Error creating campaign:', err);
+      alert('Failed to create campaign');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="email-form">
+      <h3>New Campaign</h3>
+      <input
+        placeholder="Campaign name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+      <button type="submit">Create</button>
+    </form>
+  );
+};
+
+export default AddCampaignForm;
+</file>
+
+<file path="src/components/AddEmailForm.js">
+import React, { useState } from 'react';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+
+const AddEmailForm = ({ isOpen, onClose, onEmailAdded }) => {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Наша збережена логіка обробки форми
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    // Видаляємо пробіли, якщо користувач скопіював пароль з ними
+    const cleanPassword = password.replace(/\s/g, '');
+
+    // Валідація: Пароль додатка Google завжди має 16 символів
+    if (cleanPassword.length !== 16) {
+      setError('Пароль додатка має містити рівно 16 символів. Перевір, чи правильно ти його скопіював з налаштувань Google.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // ТУТ НАША ЛОГІКА ЗБЕРЕЖЕННЯ (або виклик функції з пропсів)
+      // await addDoc(collection(db, 'emails'), {
+      //   email,
+      //   name,
+      //   password: cleanPassword,
+      //   createdAt: new Date(),
+      //   status: 'active'
+      // });
+
+      // Якщо ти передаєш функцію збереження зверху:
+      if (onEmailAdded) {
+        await onEmailAdded({ email, name, password: cleanPassword });
+      }
+
+      // Очищаємо стейти після успішного додавання
+      setEmail('');
+      setName('');
+      setPassword('');
+      onClose();
+    } catch (err) {
+      console.error("Помилка додавання пошти:", err);
+      setError('Не вдалося підключити пошту. Перевір дані та спробуй ще раз.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div style={styles.overlay}>
+      <div style={styles.modal}>
+        <div style={styles.header}>
+          <h3 style={styles.title}>Підключення Gmail акаунта</h3>
+          <button style={styles.closeBtn} onClick={onClose} aria-label="Закрити">
+            &times;
+          </button>
+        </div>
+
+        {error && (
+          <div style={styles.errorBox}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Відображуване ім'я (Відправник)</label>
+            <input 
+              type="text" 
+              required 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              placeholder="Кафедра Інформаційних Систем" 
+              style={styles.input} 
+            />
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Електронна пошта (Gmail)</label>
+            <input 
+              type="email" 
+              required 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="example@gmail.com" 
+              style={styles.input} 
+            />
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Пароль додатка (App Password)</label>
+            <input 
+              type="password" 
+              required 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              placeholder="•••• •••• •••• ••••" 
+              style={styles.input} 
+            />
+            <span style={styles.hintText}>
+              💡 <strong>Увага:</strong> Використовуйте не ваш основний пароль від пошти, а спеціальний 16-значний "Пароль додатка" (App Password), згенерований у налаштуваннях безпеки вашого Google акаунта.
+            </span>
+          </div>
+
+          <div style={styles.footer}>
+            <button type="button" onClick={onClose} style={styles.cancelBtn} disabled={isSubmitting}>
+              Скасувати
+            </button>
+            <button type="submit" style={styles.submitBtn} disabled={isSubmitting}>
+              {isSubmitting ? 'Підключення...' : 'Зберегти та підключити'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Акуратні стилі для UniSync
+const styles = {
+  overlay: {
+    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+  },
+  modal: {
+    backgroundColor: '#ffffff', borderRadius: '12px', width: '100%', maxWidth: '480px',
+    padding: '32px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
+  },
+  header: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'
+  },
+  title: { margin: 0, fontSize: '1.25rem', fontWeight: '600', color: '#1e293b' },
+  closeBtn: {
+    background: 'transparent', border: 'none', fontSize: '1.75rem', lineHeight: '1',
+    cursor: 'pointer', color: '#94a3b8', transition: 'color 0.2s'
+  },
+  errorBox: {
+    backgroundColor: '#fef2f2', border: '1px solid #f87171', color: '#b91c1c',
+    padding: '12px', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '20px'
+  },
+  form: { display: 'flex', flexDirection: 'column', gap: '20px' },
+  inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
+  label: { fontSize: '0.875rem', fontWeight: '500', color: '#475569' },
+  input: {
+    padding: '12px 16px', borderRadius: '8px', border: '1px solid #cbd5e1',
+    fontSize: '1rem', color: '#0f172a', outline: 'none', transition: 'border-color 0.2s',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+  },
+  hintText: { fontSize: '0.75rem', color: '#64748b', lineHeight: '1.5', marginTop: '4px' },
+  footer: { display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' },
+  cancelBtn: {
+    padding: '10px 20px', borderRadius: '8px', border: '1px solid #e2e8f0',
+    backgroundColor: '#ffffff', color: '#475569', fontSize: '0.875rem', fontWeight: '500', cursor: 'pointer'
+  },
+  submitBtn: {
+    padding: '10px 20px', borderRadius: '8px', border: 'none',
+    backgroundColor: '#2563eb', color: '#ffffff', fontSize: '0.875rem', fontWeight: '500', cursor: 'pointer',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+  }
+};
+
+export default AddEmailForm;
+</file>
+
+<file path="src/components/CampaignCard.js">
+import React from 'react';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+
+const CampaignCard = ({ id, name, leads, sent }) => {
+  const navigate = useNavigate();
+
+  const goToSettings = () => {
+    navigate(`/campaigns/${id}/settings`);
+  };
+
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    const confirmed = window.confirm(`Ви впевнені, що хочете видалити кампанію "${name}"?`);
+    if (!confirmed) return;
+
+    try {
+      await deleteDoc(doc(db, 'campaigns', id));
+    } catch (err) {
+      console.error('Помилка при видаленні кампанії:', err.message);
+      alert('Не вдалося видалити кампанію.');
+    }
+  };
+
+  return (
+    <div className="campaign-card">
+      {/* 🔥 Додали flex та space-between щоб ідеально рознести заголовок і кнопку */}
+      <div className="campaign-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', width: '100%' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--bg-sidebar)', margin: 0 }}>{name}</h3>
+        
+        <button 
+          onClick={handleDelete} 
+          title="Видалити кампанію"
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            width: '36px',
+            height: '36px',
+            background: '#fee2e2', 
+            color: '#ef4444',
+            border: 'none', 
+            borderRadius: '8px', 
+            cursor: 'pointer',
+            transition: 'var(--transition)'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#ef4444';
+            e.currentTarget.style.color = '#ffffff';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#fee2e2';
+            e.currentTarget.style.color = '#ef4444';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <div className="campaign-stats" style={{ display: 'flex', gap: '24px', color: 'var(--text-muted)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '18px' }}>👥</span>
+          <span><strong>{leads}</strong> викладачів</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '18px' }}>✅</span>
+          <span><strong>{sent || 0}</strong> відправлено</span>
+        </div>
+      </div>
+
+      <button
+        onClick={goToSettings}
+        style={{
+          marginTop: '20px',
+          padding: '12px',
+          width: '100%',
+          backgroundColor: '#eff6ff',
+          color: 'var(--primary)',
+          border: '1px solid #bfdbfe',
+          borderRadius: 'var(--radius-sm)',
+          cursor: 'pointer',
+          fontWeight: '600',
+          fontSize: '14px',
+          transition: 'var(--transition)'
+        }}
+        onMouseOver={(e) => {
+          e.target.style.backgroundColor = 'var(--primary)';
+          e.target.style.color = 'white';
+        }}
+        onMouseOut={(e) => {
+          e.target.style.backgroundColor = '#eff6ff';
+          e.target.style.color = 'var(--primary)';
+        }}
+      >
+        Відкрити кампанію →
+      </button>
+    </div>
+  );
+};
+
+export default CampaignCard;
+</file>
+
+<file path="src/components/CampaignList.js">
+import React, { useState, useEffect } from 'react';
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  getCountFromServer
+} from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import CampaignCard from './CampaignCard';
+import Modal from './Modal';
+import AddCampaignForm from './AddCampaignForm';
+
+
+const CampaignList = () => {
+  const [campaigns, setCampaigns] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [leadCounts, setLeadCounts] = useState({});
+  const [replyCounts, setReplyCounts] = useState({});
+
+  useEffect(() => {
+    const q = query(
+      collection(db, 'campaigns'),
+      where('ownerUid', '==', auth.currentUser?.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setCampaigns(fetched);
+
+      const counts = {};
+      const replies = {};
+
+      for (const campaign of fetched) {
+        // Підрахунок лідів
+        const leadsQuery = query(
+          collection(db, 'leads'),
+          where('campaignId', '==', campaign.id)
+        );
+        const leadSnap = await getCountFromServer(leadsQuery);
+        counts[campaign.id] = leadSnap.data().count;
+
+        // Підрахунок відповідей
+        const repliesQuery = query(
+          collection(db, 'replies'),
+          where('campaignId', '==', campaign.id)
+        );
+        const replySnap = await getCountFromServer(repliesQuery);
+        replies[campaign.id] = replySnap.data().count;
+      }
+
+      setLeadCounts(counts);
+      setReplyCounts(replies);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleAddSuccess = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div className="campaign-list">
+      <div className="campaigns-header">
+        <h2>Campaigns</h2>
+        <button className="add-button" onClick={() => setIsModalOpen(true)}>+ Add New</button>
+      </div>
+
+      {campaigns.length === 0 && <p>No campaigns yet. Click "+ Add New" to create one.</p>}
+
+      {campaigns.map((campaign) => (
+        <CampaignCard
+          key={campaign.id}
+          id={campaign.id}
+          name={campaign.name}
+          leads={leadCounts[campaign.id] || 0}
+          sent={campaign.sent || 0}
+          replies={replyCounts[campaign.id] || 0}
+          status={campaign.status || 'draft'}
+        />
+      ))}
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <AddCampaignForm onSuccess={handleAddSuccess} />
+      </Modal>
+    </div>
+  );
+};
+
+export default CampaignList;
+</file>
+
+<file path="src/components/CampaignOptions.js">
+import React, { useEffect, useState, useRef } from 'react';
+import * as XLSX from 'xlsx';
+import Papa from 'papaparse';
+import { db, auth } from '../firebase';
+// 🔥 Додали нові методи Firebase для запису логів та оновлення лічильника
+import { collection, getDocs, query, where, addDoc, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
+
+const CampaignOptions = ({ campaignId }) => {
+  const [emails, setEmails] = useState([]);
+  const [selectedSender, setSelectedSender] = useState('');
+  const [subject, setSubject] = useState('Ваше навчальне навантаження на семестр');
+  const [leads, setLeads] = useState([]);
+  
+  const [matchedData, setMatchedData] = useState([]);
+  const [isSending, setIsSending] = useState(false);
+  const [sendProgress, setSendProgress] = useState(null); 
+  
+  const [sentIndexes, setSentIndexes] = useState(new Set());
+  
+  const cancelRef = useRef(false); 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const emailSnap = await getDocs(query(collection(db, 'emails'), where('ownerUid', '==', auth.currentUser?.uid)));
+      setEmails(emailSnap.docs.map(document => ({ id: document.id, ...document.data() })));
+      
+      const leadsSnap = await getDocs(query(collection(db, 'leads'), where('campaignId', '==', campaignId)));
+      setLeads(leadsSnap.docs.map(document => document.data()));
+    };
+    fetchData();
+  }, [campaignId]);
+
+  const normalizeAbbrev = (str) => {
+    if (!str) return '';
+    let s = str.toString().toUpperCase().trim();
+    const en = "ABCEHIKMOPTX";
+    const ua = "АВСЕНІКМОРТХ";
+    for (let i = 0; i < en.length; i++) {
+      s = s.split(en[i]).join(ua[i]);
+    }
+    return s.replace(/[^А-ЯІЇЄҐ0-9]/g, '');
+  };
+
+  const processRows = (rows) => {
+    if (!rows || rows.length === 0) return;
+
+    const headerRow = rows[0]; 
+
+    const grouped = {};
+    const knownLeads = leads.map(l => normalizeAbbrev(l.abbreviation)).filter(Boolean);
+    let currentAbbrev = '';
+
+    rows.forEach((row, index) => {
+      if (!Array.isArray(row)) return;
+      if (index === 0) return; 
+
+      let found = null;
+      for (let cell of row) {
+        if (!cell) continue;
+        const norm = normalizeAbbrev(cell.toString());
+        if (knownLeads.includes(norm)) {
+          found = norm;
+          break;
+        }
+      }
+
+      if (found) {
+        currentAbbrev = found;
+      } else if (row[0] && !isNaN(row[0])) {
+      } else if (row[0] && currentAbbrev) {}
+
+      if (currentAbbrev) {
+        if (!grouped[currentAbbrev]) grouped[currentAbbrev] = [];
+        grouped[currentAbbrev].push(row);
+      }
+    });
+
+    const readyToSend = [];
+    leads.forEach(lead => {
+      const leadAbbrev = normalizeAbbrev(lead.abbreviation);
+      if (grouped[leadAbbrev]) {
+        let htmlTable = `<table border="1" style="border-collapse: collapse; width: 100%; max-width: 900px; font-family: Arial, sans-serif; font-size: 14px; border: 1px solid #cbd5e1; margin-top: 15px;">`;
+        
+        htmlTable += `<thead><tr style="background-color: #cbd5e1; color: #0f172a;">`;
+        headerRow.forEach((cell) => {
+          htmlTable += `<th style="padding: 10px 12px; border: 1px solid #94a3b8; text-align: left; font-weight: bold;">${cell !== undefined && cell !== null ? cell : ''}</th>`;
+        });
+        htmlTable += `</tr></thead><tbody>`;
+        
+        grouped[leadAbbrev].forEach((r, rowIndex) => {
+          const bgStyle = rowIndex % 2 === 0 ? 'background-color: #ffffff;' : 'background-color: #f8fafc;';
+          htmlTable += `<tr style="${bgStyle}">`;
+          
+          r.forEach((cell) => {
+            const isTotalRow = r.some(c => c?.toString().includes('Підсумок'));
+            const fontWeight = isTotalRow ? 'font-weight: bold; color: #1e293b; background-color: #f1f5f9;' : 'color: #334155;';
+            htmlTable += `<td style="padding: 10px 12px; border: 1px solid #cbd5e1; text-align: left; ${fontWeight}">${cell !== undefined && cell !== null ? cell : ''}</td>`;
+          });
+          htmlTable += '</tr>';
+        });
+        htmlTable += `</tbody></table>`;
+
+        const emailHtmlBody = `
+          <div style="font-family: Arial, sans-serif; color: #1e293b; line-height: 1.6; max-width: 600px;">
+            <p style="font-size: 16px;">Доброго дня, <strong>${lead.firstName} ${lead.lastName}</strong>!</p>
+            <p style="font-size: 14px; color: #475569;">Надсилаємо витяг із загального плану розподілу навчального навантаження:</p>
+            ${htmlTable}
+            <br><hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+            <p style="font-size: 12px; color: #94a3b8;">Цей лист згенеровано автоматично.</p>
+          </div>
+        `;
+
+        readyToSend.push({ 
+          to: lead.email, 
+          name: lead.firstName, 
+          htmlBody: emailHtmlBody,
+          tableRows: [headerRow, ...grouped[leadAbbrev]] 
+        });
+      }
+    });
+
+    if (readyToSend.length === 0) {
+      alert("⚠️ Збігів не знайдено! Переконайтеся, що скорочення в базі та файлі ідентичні.");
+    }
+
+    setMatchedData(readyToSend);
+    setSentIndexes(new Set()); 
+  };
+
+  const handleMasterFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.name.endsWith('.csv')) {
+      Papa.parse(file, {
+        encoding: "UTF-8",
+        skipEmptyLines: true,
+        complete: (results) => processRows(results.data)
+      });
+    } else {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const wb = XLSX.read(evt.target.result, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wsname], { header: 1 });
+        processRows(rows);
+      };
+      reader.readAsBinaryString(file);
+    }
+    e.target.value = null; 
+  };
+
+  const handleStop = () => {
+    cancelRef.current = true;
+  };
+
+  const handleSend = async () => {
+    if (!selectedSender) return alert('Оберіть пошту відправника!');
+    if (matchedData.length === 0) return alert('Немає даних для відправки.');
+
+    const senderAcc = emails.find(e => e.id === selectedSender);
+    
+    if (!senderAcc.smtpPassword && !senderAcc.appPassword && !senderAcc.password) {
+      alert('❌ У вибраної пошти немає пароля додатку в базі даних! Додайте пароль у налаштуваннях пошти.');
+      return;
+    }
+
+    setIsSending(true);
+    cancelRef.current = false; 
+    
+    let successCount = sentIndexes.size;
+    let errorCount = 0; 
+
+    for (let i = 0; i < matchedData.length; i++) {
+      if (cancelRef.current) {
+        alert(`🛑 Відправку зупинено!\nВсього успішно відправлено: ${successCount}\nПомилок у цій сесії: ${errorCount}`);
+        break;
+      }
+
+      if (sentIndexes.has(i)) {
+        continue;
+      }
+
+      setSendProgress({ 
+        current: i + 1, 
+        total: matchedData.length, 
+        success: successCount, 
+        error: errorCount,
+        status: 'Відправляємо...' 
+      });
+      
+      try {
+        const response = await fetch('http://localhost:3001/api/send-single', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            senderAccount: senderAcc,
+            subject,
+            emailData: matchedData[i]
+          })
+        });
+
+        if (response.ok) {
+          successCount++;
+          setSentIndexes(prev => {
+            const newSet = new Set(prev);
+            newSet.add(i);
+            return newSet;
+          });
+
+          // 🔥 ЗАПИС ІСТОРІЇ: Зберігаємо лог і плюсуємо статистику кампанії
+          try {
+            await addDoc(collection(db, 'send_logs'), {
+              campaignId,
+              recipientEmail: matchedData[i].to,
+              recipientName: matchedData[i].name,
+              sentAt: serverTimestamp(),
+              htmlContent: matchedData[i].htmlBody,
+              ownerUid: auth.currentUser?.uid
+            });
+
+            // Збільшуємо лічильник "відправлено" в документі кампанії на +1
+            await updateDoc(doc(db, 'campaigns', campaignId), {
+              sent: increment(1)
+            });
+          } catch (logErr) {
+            console.error("Не вдалося зберегти лог відправки:", logErr);
+          }
+
+        } else {
+          errorCount++;
+        }
+      } catch (err) {
+        console.error("Помилка при відправці:", err);
+        errorCount++;
+      }
+
+      if (i < matchedData.length - 1 && !cancelRef.current) {
+        setSendProgress({ 
+          current: i + 1, 
+          total: matchedData.length, 
+          success: successCount, 
+          error: errorCount,
+          status: 'Очікування 3 сек...' 
+        });
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+    }
+
+    if (!cancelRef.current) {
+      alert(`✅ Роботу повністю завершено!\nВсього відправлено: ${successCount}\nПомилок: ${errorCount}`);
+      if (successCount === matchedData.length) {
+        setMatchedData([]); 
+        setSentIndexes(new Set()); 
+      }
+    }
+    
+    setIsSending(false);
+    setSendProgress(null);
+  };
+
+  const remainingCount = matchedData.length - sentIndexes.size;
+  const isResuming = sentIndexes.size > 0 && remainingCount > 0;
+
+  return (
+    <div style={{ background: '#fff', borderRadius: '10px' }}>      
+      <div style={{ marginBottom: '20px' }}>
+        <label style={{ fontWeight: '600', color: 'var(--text-main)', display: 'block', marginBottom: '8px' }}>
+          Відправник (ваша пошта Gmail/LPNU):
+        </label>
+        <select 
+          className="search-input"
+          value={selectedSender} 
+          onChange={e => setSelectedSender(e.target.value)}
+        >
+          <option value="">-- Оберіть пошту --</option>
+          {emails.map(e => <option key={e.id} value={e.id}>{e.email}</option>)}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: '30px' }}>
+        <label style={{ fontWeight: '600', color: 'var(--text-main)', display: 'block', marginBottom: '8px' }}>
+          Тема листа:
+        </label>
+        <input 
+          className="search-input"
+          type="text" 
+          value={subject} 
+          onChange={e => setSubject(e.target.value)} 
+        />
+      </div>
+
+      <div className="upload-zone">
+        <span className="upload-icon">📊</span>
+        <div className="upload-text">Завантажте загальну таблицю навантаження (.xlsx, .csv)</div>
+        <div className="upload-subtext">Програма автоматично розріже її та підготує листи за скороченнями</div>
+        <input type="file" accept=".csv, .xlsx, .xls" onChange={handleMasterFileUpload} />
+      </div>
+
+      {matchedData.length > 0 && (
+        <div style={{ marginTop: '40px' }}>
+          
+          {isSending ? (
+            <div style={{ padding: '24px', background: '#fffbeb', border: '2px solid #f59e0b', borderRadius: 'var(--radius-lg)', textAlign: 'center', marginBottom: '30px', boxShadow: 'var(--shadow-sm)' }}>
+              <h4 style={{ color: '#d97706', margin: '0 0 15px 0', fontSize: '18px' }}>
+                {sendProgress?.status} (Лист {sendProgress?.current} з {sendProgress?.total})
+              </h4>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginBottom: '20px', fontSize: '15px' }}>
+                <span style={{ color: '#047857', fontWeight: 'bold' }}>✅ Успішно: {sendProgress?.success}</span>
+                <span style={{ color: '#b91c1c', fontWeight: 'bold' }}>❌ Помилок: {sendProgress?.error}</span>
+              </div>
+              <button 
+                onClick={handleStop}
+                style={{ padding: '12px 24px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 'bold', cursor: 'pointer', transition: 'var(--transition)' }}
+                onMouseOver={e => e.currentTarget.style.background = '#b91c1c'}
+                onMouseOut={e => e.currentTarget.style.background = '#dc2626'}
+              >
+                🛑 ЗУПИНИТИ ВІДПРАВКУ
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={handleSend} 
+              style={{ width: '100%', padding: '14px', background: isResuming ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' : 'linear-gradient(135deg, var(--primary) 0%, #3730a3 100%)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '30px', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition)' }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              {isResuming 
+                ? `▶️ Продовжити розсилку (Залишилось ${remainingCount} листів)` 
+                : `🚀 Запустити безпечну розсилку (${matchedData.length} листів)`
+              }
+            </button>
+          )}
+
+          <h3 style={{ color: 'var(--text-main)', marginBottom: '20px', fontSize: '20px' }}>Попередній перегляд (Знайдено збігів: {matchedData.length})</h3>
+          
+          {matchedData.map((item, idx) => {
+            const isSent = sentIndexes.has(idx);
+            
+            return (
+              <div key={idx} style={{ marginBottom: '25px', border: isSent ? '2px solid #10b981' : '1px solid #e2e8f0', borderRadius: 'var(--radius-md)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ background: isSent ? '#d1fae5' : '#f8fafc', padding: '12px 20px', borderBottom: isSent ? '1px solid #10b981' : '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span><strong style={{ color: 'var(--bg-sidebar)' }}>Отримувач:</strong> {item.name} <em style={{ color: 'var(--text-muted)' }}>({item.to})</em></span>
+                  {isSent && <span style={{ color: '#047857', fontWeight: 'bold', fontSize: '13px', background: '#a7f3d0', padding: '4px 10px', borderRadius: '20px' }}>✅ Надіслано</span>}
+                </div>
+                <div style={{ padding: '20px', overflowX: 'auto', opacity: isSent ? 0.6 : 1, transition: 'var(--transition)' }}>
+                  <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse', borderRadius: '4px', overflow: 'hidden' }}>
+                    <tbody>
+                      {item.tableRows.map((row, rIdx) => {
+                        const isHeader = rIdx === 0;
+                        return (
+                          <tr key={rIdx} style={isHeader ? { backgroundColor: '#e2e8f0', fontWeight: 'bold', color: '#0f172a' } : {}}>
+                            {row.map((cell, cIdx) => (
+                              <td key={cIdx} style={{ border: '1px solid #cbd5e1', padding: '8px 12px' }}>
+                                {cell}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CampaignOptions;
+</file>
+
+<file path="src/components/EmailCard.js">
+import React from 'react';
+
+const EmailCard = ({ name, sent, onSettings }) => {
+  return (
+    <div className="campaign-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div className="campaign-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--bg-sidebar)', margin: 0 }}>{name}</h3>
+        
+        {/* Сучасна кнопка налаштувань у правій частині картки */}
+        <button 
+          onClick={onSettings} 
+          title="Налаштування пошти"
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            width: '36px',
+            height: '36px',
+            background: '#f1f5f9', 
+            color: '#475569',
+            border: 'none', 
+            borderRadius: '8px', 
+            cursor: 'pointer',
+            transition: 'var(--transition)'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--primary)';
+            e.currentTarget.style.color = '#ffffff';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#f1f5f9';
+            e.currentTarget.style.color = '#475569';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <div className="campaign-stats" style={{ display: 'flex', gap: '16px', color: 'var(--text-muted)', fontSize: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span>📨</span>
+          <span>Відправлено сьогодні: <strong style={{ color: 'var(--text-main)' }}>{sent || 0}</strong> листів</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EmailCard;
+</file>
+
+<file path="src/components/EmailList.js">
+import React, { useState, useEffect } from 'react';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import EmailCard from './EmailCard';
+import Modal from './Modal';
+import AddEmailForm from './AddEmailForm';
+import SettingsSidebar from './SettingsSidebar';
+import GmailHelpModal from './GmailHelpModal';
+
+const EmailList = () => {
+  const [emails, setEmails] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState(null);
+
+  useEffect(() => {
+    const q = query(
+      collection(db, 'emails'),
+      where('ownerUid', '==', auth.currentUser?.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const today = new Date().toISOString().split('T')[0];
+      const fetched = snapshot.docs.map(doc => {
+        const data = doc.data();
+        const sentToday = data.dailySentDate === today ? (data.dailySentCount || 0) : 0;
+        return { id: doc.id, ...data, sentToday };
+      });
+      setEmails(fetched);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleAddSuccess = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div className="campaign-list">
+      <div className="campaigns-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+        <h2>Поштові акаунти</h2>
+        
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            onClick={() => setIsHelpModalOpen(true)}
+            style={{ 
+              background: '#f8fafc', color: 'var(--text-main)', 
+              border: '1px solid #e2e8f0', padding: '10px 16px', 
+              borderRadius: 'var(--radius-sm)', cursor: 'pointer', 
+              fontWeight: '600', fontSize: '14px', transition: 'var(--transition)',
+              display: 'flex', alignItems: 'center', gap: '6px'
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+          >
+            <span>💡</span> Інструкція
+          </button>
+
+          <button className="add-button" onClick={() => setIsModalOpen(true)}>
+            + Додати Gmail
+          </button>
+        </div>
+      </div>
+
+      {emails.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: 'var(--radius-lg)', border: '1px dashed #cbd5e1', marginTop: '20px' }}>
+          <span style={{ fontSize: '40px', display: 'block', marginBottom: '15px' }}>📧</span>
+          <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '18px' }}>Немає підключених акаунтів</h3>
+          <p style={{ marginTop: '8px', color: 'var(--text-muted)' }}>Натисніть "+ Додати Gmail", щоб почати роботу.</p>
+        </div>
+      )}
+
+      {emails.map((email) => (
+        <EmailCard
+          key={email.id}
+          name={email.email}
+          sent={email.sentToday}
+          onSettings={() => setSelectedEmail(email)}
+        />
+      ))}
+
+      {/* Модалка для додавання пошти */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <AddEmailForm onSuccess={handleAddSuccess} />
+      </Modal>
+
+      {/* Наша нова преміальна модалка з інструкцією */}
+      {isHelpModalOpen && (
+        <GmailHelpModal onClose={() => setIsHelpModalOpen(false)} />
+      )}
+
+      {/* Налаштування існуючої пошти */}
+      {selectedEmail && (
+        <SettingsSidebar
+          emailData={selectedEmail}
+          onClose={() => setSelectedEmail(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default EmailList;
+</file>
+
+<file path="src/components/LeadsTable.js">
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+
+
+const LeadsTable = ({ campaignId }) => {
+  const [leads, setLeads] = useState([]);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    const q = query(
+      collection(db, 'leads'),
+      where('ownerUid', '==', auth.currentUser?.uid),
+      where('campaignId', '==', campaignId)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const loaded = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setLeads(loaded);
+    });
+
+    return () => unsubscribe();
+  }, [campaignId]);
+
+  // Функція для збереження абревіатури при втраті фокусу (onBlur)
+  const handleAbbrevChange = async (id, value) => {
+    try {
+      await updateDoc(doc(db, 'leads', id), { abbreviation: value.trim() });
+    } catch (err) {
+      console.error('Помилка оновлення скорочення:', err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Видалити ліда?')) {
+      await deleteDoc(doc(db, 'leads', id));
+    }
+  };
+
+  const filteredLeads = leads.filter(lead => lead.email?.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="leads-table">
+      <input
+        type="text"
+        placeholder="Пошук за email..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-input"
+      />
+      <table>
+        <thead>
+          <tr>
+            <th>Скорочення (Код)</th>
+            <th>Ім'я</th>
+            <th>Email</th>
+            <th>Дії</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredLeads.map((lead) => (
+            <tr key={lead.id}>
+              <td>
+                <input
+                  type="text"
+                  defaultValue={lead.abbreviation || ''}
+                  onBlur={(e) => handleAbbrevChange(lead.id, e.target.value)}
+                  placeholder="напр. ВЕР"
+                  style={{ padding: '6px', width: '80px', borderRadius: '4px', border: '1px solid #ccc' }}
+                />
+              </td>
+              <td>{lead.firstName} {lead.lastName}</td>
+              <td>{lead.email}</td>
+              <td>
+                <button onClick={() => handleDelete(lead.id)} className="delete-button">🗑</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default LeadsTable;
+</file>
+
+<file path="src/components/LeadsUploader.js">
+import React, { useState } from 'react';
+import Papa from 'papaparse';
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+
+const LeadsUploader = ({ campaignId }) => {
+  const [allowDuplicates, setAllowDuplicates] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleFile = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+
+    let existingEmails = new Set();
+    if (!allowDuplicates) {
+      const q = query(collection(db, 'leads'), where('ownerUid', '==', auth.currentUser?.uid));
+      const snapshot = await getDocs(q);
+      existingEmails = new Set(snapshot.docs.map(doc => doc.data().email.toLowerCase()));
+    }
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: (header) => header.trim(),
+      complete: async (results) => {
+        const rows = results.data.filter(row => row["Work Email"] || row["Email"]);
+        const leadsToAdd = [];
+
+        for (const lead of rows) {
+          const email = (lead["Work Email"] || lead["Email"] || '').toLowerCase();
+          
+          if (!allowDuplicates && existingEmails.has(email)) continue;
+
+          leadsToAdd.push({
+            firstName: lead["First Name"] || '',
+            lastName: lead["Last Name"] || '',
+            email,
+            abbreviation: lead["Abbreviation"] || lead["Скорочення"] || '', 
+            ownerUid: auth.currentUser?.uid,
+            campaignId,
+            active: true,
+            createdAt: serverTimestamp(),
+          });
+        }
+
+        for (const lead of leadsToAdd) {
+          try {
+            await addDoc(collection(db, 'leads'), lead);
+          } catch (err) {
+            console.error("❌ Error saving lead:", err);
+          }
+        }
+
+        alert(`✅ Завантажено ${leadsToAdd.length} лідів.`);
+        setLoading(false);
+        e.target.value = null; // Очищуємо інпут після завантаження
+      },
+      error: (error) => {
+        console.error("CSV parsing failed:", error);
+        alert("⛔ Помилка при обробці CSV.");
+        setLoading(false);
+      }
+    });
+  };
+
+  return (
+    <div style={{ marginBottom: '40px' }}>
+      
+      {/* Налаштування дублікатів */}
+      <label className="checkbox-wrapper">
+        <input 
+          type="checkbox" 
+          checked={allowDuplicates} 
+          onChange={(e) => setAllowDuplicates(e.target.checked)} 
+          disabled={loading}
+        />
+        Дозволити дублікати адрес (режим тестування)
+      </label>
+
+      {/* Зона завантаження */}
+      <div className="upload-zone">
+        <span className="upload-icon">📁</span>
+        <div className="upload-text">Натисніть або перетягніть CSV-файл сюди</div>
+        <div className="upload-subtext">Очікувані колонки: First Name, Last Name, Email, Скорочення</div>
+        
+        {/* Невидимий інпут, який приймає файли */}
+        <input 
+          type="file" 
+          accept=".csv" 
+          onChange={handleFile} 
+          disabled={loading} 
+        />
+      </div>
+      
+      {/* Індикатор завантаження */}
+      {loading && (
+        <div className="loading-state">
+          <span>⏳</span> Обробка та збереження викладачів в базу...
+        </div>
+      )}
+      
+    </div>
+  );
+};
+
+export default LeadsUploader;
+</file>
+
+<file path="src/components/Modal.js">
+import React from 'react';
+
+
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>×</button>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default Modal;
+</file>
+
+<file path="src/components/SettingsSidebar.js">
+import React, { useState, useEffect } from 'react';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+
+const SettingsSidebar = ({ emailData, onClose }) => {
+  const [form, setForm] = useState({
+    firstName: emailData.firstName || '',
+    lastName: emailData.lastName || '',
+  });
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Плавне закриття модалки
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(onClose, 250); // Чекаємо, поки програється анімація зникнення
+  };
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const docRef = doc(db, 'emails', emailData.id);
+      await updateDoc(docRef, {
+        firstName: form.firstName,
+        lastName: form.lastName,
+      });
+      handleClose();
+    } catch (err) {
+      console.error('Update error:', err);
+      alert('Не вдалося зберегти зміни.');
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Ви впевнені, що хочете видалити цей поштовий акаунт із системи?');
+    if (!confirmed) return;
+
+    try {
+      const docRef = doc(db, 'emails', emailData.id);
+      await deleteDoc(docRef);
+      handleClose();
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Не вдалося видалити акаунт.');
+    }
+  };
+
+  // Блокуємо скрол фону, поки відкрита модалка
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  return (
+    <>
+      <style>
+        {`
+          @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          @keyframes modalExit {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.9) translateY(20px); }
+          }
+          @keyframes backdropEnter {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
+          }
+          @keyframes backdropExit {
+            from { opacity: 1; backdrop-filter: blur(8px); }
+            to { opacity: 0; backdrop-filter: blur(0px); }
+          }
+          .premium-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 15px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+          }
+          .premium-input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+            outline: none;
+          }
+        `}
+      </style>
+
+      {/* Темний фон з ефектом скла */}
+      <div 
+        onClick={handleClose} 
+        style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(15, 23, 42, 0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 9999,
+          animation: `${isClosing ? 'backdropExit' : 'backdropEnter'} 0.25s ease-out forwards`
+        }}
+      >
+        {/* Сама картка модального вікна */}
+        <div 
+          onClick={e => e.stopPropagation()} 
+          style={{
+            width: '100%', maxWidth: '420px',
+            background: '#ffffff',
+            borderRadius: '24px',
+            padding: '40px 32px 32px',
+            position: 'relative',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(79, 70, 229, 0.1)',
+            animation: `${isClosing ? 'modalExit' : 'modalEnter'} 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards`
+          }}
+        >
+          {/* Літаюча іконка зверху (Absolute) */}
+          <div style={{
+            position: 'absolute', top: '-30px', left: '50%', transform: 'translateX(-50%)',
+            width: '64px', height: '64px',
+            background: 'linear-gradient(135deg, var(--primary) 0%, #3730a3 100%)',
+            borderRadius: '18px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white',
+            boxShadow: '0 10px 25px rgba(79, 70, 229, 0.4)',
+            rotate: '-3deg'
+          }}>
+            <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </div>
+          
+          {/* Кнопка закриття (Хрестик) */}
+          <button 
+            onClick={handleClose}
+            style={{
+              position: 'absolute', top: '20px', right: '20px',
+              background: '#f1f5f9', border: 'none',
+              width: '32px', height: '32px', borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-muted)', cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.color = '#0f172a'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+          >
+            ✕
+          </button>
+
+          {/* Заголовок */}
+          <div style={{ textAlign: 'center', marginBottom: '32px', marginTop: '10px' }}>
+            <h3 style={{ fontSize: '26px', fontWeight: '800', color: 'var(--bg-sidebar)', margin: '0 0 10px 0', letterSpacing: '-0.5px' }}>
+              Профіль пошти
+            </h3>
+            <div style={{ 
+              display: 'inline-block', background: '#f8fafc', border: '1px solid #e2e8f0', 
+              padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)' 
+            }}>
+              {emailData.email}
+            </div>
+          </div>
+
+          {/* Інпути */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                Ім'я відправника
+              </label>
+              <input 
+                name="firstName" 
+                type="text"
+                value={form.firstName} 
+                onChange={handleChange} 
+                className="premium-input"
+                placeholder="напр. Василь"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                Прізвище відправника
+              </label>
+              <input 
+                name="lastName" 
+                type="text"
+                value={form.lastName} 
+                onChange={handleChange} 
+                className="premium-input"
+                placeholder="напр. Роїк"
+              />
+            </div>
+          </div>
+
+          {/* Кнопки дій */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <button 
+              onClick={handleSave} 
+              style={{ 
+                width: '100%', padding: '16px', 
+                background: 'linear-gradient(135deg, var(--primary) 0%, #3730a3 100%)', 
+                color: 'white', border: 'none', borderRadius: '12px', 
+                fontSize: '15px', fontWeight: '700', cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              💾 Зберегти зміни
+            </button>
+            
+            <button 
+              onClick={handleDelete} 
+              style={{ 
+                width: '100%', padding: '14px', 
+                background: 'transparent', color: '#ef4444', 
+                border: '2px solid transparent', borderRadius: '12px', 
+                fontWeight: '600', fontSize: '15px', cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = '#fee2e2'; e.currentTarget.style.borderColor = '#fca5a5'; }}
+              onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}
+            >
+              Видалити акаунт
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default SettingsSidebar;
+</file>
+
+<file path="src/components/Sidebar.js">
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+
+const navItems = [
+  { icon: '📤', label: 'Кампанії', path: '/campaigns' },
+  { icon: '📧', label: 'Пошти', path: '/emails' },
+  { icon: '👥', label: 'Викладачі', path: '/leads' },
+];
+
+const Sidebar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Стани для кастомного вікна виходу
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const openLogoutModal = () => {
+    setIsLogoutModalOpen(true);
+    setIsClosing(false);
+  };
+
+  const closeLogoutModal = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsLogoutModalOpen(false);
+    }, 250);
+  };
+
+  const confirmLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Помилка при виході:', error);
+      alert('Не вдалося вийти з акаунту.');
+    }
+  };
+
+  return (
+    <>
+      {/* Додаємо стилі анімацій прямо сюди, щоб вони працювали незалежно */}
+      <style>
+        {`
+          @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          @keyframes modalExit {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.9) translateY(20px); }
+          }
+          @keyframes backdropEnter {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
+          }
+          @keyframes backdropExit {
+            from { opacity: 1; backdrop-filter: blur(8px); }
+            to { opacity: 0; backdrop-filter: blur(0px); }
+          }
+        `}
+      </style>
+
+      <div className="sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
+        
+        <div className="sidebar-icons" style={{ width: '100%' }}>
+          {navItems.map((item, index) => (
+            <div
+              key={index}
+              className="tooltip-container"
+              onClick={() => navigate(item.path)}
+            >
+              <div className={`sidebar-icon ${location.pathname === item.path ? 'active' : ''}`}>
+                {item.icon}
+              </div>
+              <span className="tooltip-text">{item.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Кнопка виходу */}
+        <div style={{ marginTop: 'auto', marginBottom: '30px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <div className="tooltip-container" onClick={openLogoutModal}>
+            <div 
+              className="sidebar-icon"
+              style={{ 
+                color: '#94a3b8', 
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' 
+              }}
+              onMouseOver={e => { 
+                e.currentTarget.style.backgroundColor = '#fee2e2'; 
+                e.currentTarget.style.color = '#ef4444'; 
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseOut={e => { 
+                e.currentTarget.style.backgroundColor = 'transparent'; 
+                e.currentTarget.style.color = '#94a3b8';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </div>
+            <span className="tooltip-text">Вийти з системи</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 🔥 Преміальне модальне вікно підтвердження виходу */}
+      {isLogoutModalOpen && (
+        <div 
+          onClick={closeLogoutModal} 
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(15, 23, 42, 0.4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 99999,
+            animation: `${isClosing ? 'backdropExit' : 'backdropEnter'} 0.25s ease-out forwards`
+          }}
+        >
+          <div 
+            onClick={e => e.stopPropagation()} 
+            style={{
+              width: '100%', maxWidth: '360px',
+              background: '#ffffff',
+              borderRadius: '24px',
+              padding: '32px',
+              position: 'relative',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(239, 68, 68, 0.1)',
+              animation: `${isClosing ? 'modalExit' : 'modalEnter'} 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards`,
+              textAlign: 'center'
+            }}
+          >
+            {/* Літаюча іконка */}
+            <div style={{
+              position: 'absolute', top: '-24px', left: '50%', transform: 'translateX(-50%)',
+              width: '56px', height: '56px',
+              background: 'linear-gradient(135deg, #f87171 0%, #dc2626 100%)',
+              borderRadius: '16px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white',
+              boxShadow: '0 10px 25px rgba(220, 38, 38, 0.4)',
+              rotate: '-3deg'
+            }}>
+              <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </div>
+
+            <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--bg-sidebar)', marginTop: '20px', marginBottom: '8px' }}>
+              Вихід з системи
+            </h3>
+            
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '28px', lineHeight: '1.5' }}>
+              Ви дійсно хочете вийти зі свого акаунту? Вам доведеться знову пройти авторизацію через Google.
+            </p>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={closeLogoutModal}
+                style={{
+                  flex: 1, padding: '12px',
+                  background: '#f1f5f9', color: 'var(--text-main)',
+                  border: 'none', borderRadius: '12px',
+                  fontSize: '14px', fontWeight: '600', cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={e => e.currentTarget.style.background = '#e2e8f0'}
+                onMouseOut={e => e.currentTarget.style.background = '#f1f5f9'}
+              >
+                Скасувати
+              </button>
+              
+              <button 
+                onClick={confirmLogout}
+                style={{
+                  flex: 1, padding: '12px',
+                  background: '#ef4444', color: 'white',
+                  border: 'none', borderRadius: '12px',
+                  fontSize: '14px', fontWeight: '600', cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                Вийти
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default Sidebar;
+</file>
+
+<file path="src/firebase.js">
+import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'; // 🔥 Додали GoogleAuthProvider
+import { getFirestore } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAoiCizZsEHQWxcCWsx9qah7tGZJdMk920",
+  authDomain: "emailsaas-e8ae9.firebaseapp.com",
+  projectId: "emailsaas-e8ae9",
+  storageBucket: "emailsaas-e8ae9.firebasestorage.app",
+  messagingSenderId: "389762954537",
+  appId: "1:389762954537:web:5bedc2ac1000877a7a3338"
+};
+
+const app = initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const provider = new GoogleAuthProvider(); // 🔥 Додали експорт provider
+</file>
+
+<file path="src/index.css">
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+</file>
+
+<file path="src/index.js">
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+</file>
+
+<file path="src/logo.svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3"><g fill="#61DAFB"><path d="M666.3 296.5c0-32.5-40.7-63.3-103.1-82.4 14.4-63.6 8-114.2-20.2-130.4-6.5-3.8-14.1-5.6-22.4-5.6v22.3c4.6 0 8.3.9 11.4 2.6 13.6 7.8 19.5 37.5 14.9 75.7-1.1 9.4-2.9 19.3-5.1 29.4-19.6-4.8-41-8.5-63.5-10.9-13.5-18.5-27.5-35.3-41.6-50 32.6-30.3 63.2-46.9 84-46.9V78c-27.5 0-63.5 19.6-99.9 53.6-36.4-33.8-72.4-53.2-99.9-53.2v22.3c20.7 0 51.4 16.5 84 46.6-14 14.7-28 31.4-41.3 49.9-22.6 2.4-44 6.1-63.6 11-2.3-10-4-19.7-5.2-29-4.7-38.2 1.1-67.9 14.6-75.8 3-1.8 6.9-2.6 11.5-2.6V78.5c-8.4 0-16 1.8-22.6 5.6-28.1 16.2-34.4 66.7-19.9 130.1-62.2 19.2-102.7 49.9-102.7 82.3 0 32.5 40.7 63.3 103.1 82.4-14.4 63.6-8 114.2 20.2 130.4 6.5 3.8 14.1 5.6 22.5 5.6 27.5 0 63.5-19.6 99.9-53.6 36.4 33.8 72.4 53.2 99.9 53.2 8.4 0 16-1.8 22.6-5.6 28.1-16.2 34.4-66.7 19.9-130.1 62-19.1 102.5-49.9 102.5-82.3zm-130.2-66.7c-3.7 12.9-8.3 26.2-13.5 39.5-4.1-8-8.4-16-13.1-24-4.6-8-9.5-15.8-14.4-23.4 14.2 2.1 27.9 4.7 41 7.9zm-45.8 106.5c-7.8 13.5-15.8 26.3-24.1 38.2-14.9 1.3-30 2-45.2 2-15.1 0-30.2-.7-45-1.9-8.3-11.9-16.4-24.6-24.2-38-7.6-13.1-14.5-26.4-20.8-39.8 6.2-13.4 13.2-26.8 20.7-39.9 7.8-13.5 15.8-26.3 24.1-38.2 14.9-1.3 30-2 45.2-2 15.1 0 30.2.7 45 1.9 8.3 11.9 16.4 24.6 24.2 38 7.6 13.1 14.5 26.4 20.8 39.8-6.3 13.4-13.2 26.8-20.7 39.9zm32.3-13c5.4 13.4 10 26.8 13.8 39.8-13.1 3.2-26.9 5.9-41.2 8 4.9-7.7 9.8-15.6 14.4-23.7 4.6-8 8.9-16.1 13-24.1zM421.2 430c-9.3-9.6-18.6-20.3-27.8-32 9 .4 18.2.7 27.5.7 9.4 0 18.7-.2 27.8-.7-9 11.7-18.3 22.4-27.5 32zm-74.4-58.9c-14.2-2.1-27.9-4.7-41-7.9 3.7-12.9 8.3-26.2 13.5-39.5 4.1 8 8.4 16 13.1 24 4.7 8 9.5 15.8 14.4 23.4zM420.7 163c9.3 9.6 18.6 20.3 27.8 32-9-.4-18.2-.7-27.5-.7-9.4 0-18.7.2-27.8.7 9-11.7 18.3-22.4 27.5-32zm-74 58.9c-4.9 7.7-9.8 15.6-14.4 23.7-4.6 8-8.9 16-13 24-5.4-13.4-10-26.8-13.8-39.8 13.1-3.1 26.9-5.8 41.2-7.9zm-90.5 125.2c-35.4-15.1-58.3-34.9-58.3-50.6 0-15.7 22.9-35.6 58.3-50.6 8.6-3.7 18-7 27.7-10.1 5.7 19.6 13.2 40 22.5 60.9-9.2 20.8-16.6 41.1-22.2 60.6-9.9-3.1-19.3-6.5-28-10.2zM310 490c-13.6-7.8-19.5-37.5-14.9-75.7 1.1-9.4 2.9-19.3 5.1-29.4 19.6 4.8 41 8.5 63.5 10.9 13.5 18.5 27.5 35.3 41.6 50-32.6 30.3-63.2 46.9-84 46.9-4.5-.1-8.3-1-11.3-2.7zm237.2-76.2c4.7 38.2-1.1 67.9-14.6 75.8-3 1.8-6.9 2.6-11.5 2.6-20.7 0-51.4-16.5-84-46.6 14-14.7 28-31.4 41.3-49.9 22.6-2.4 44-6.1 63.6-11 2.3 10.1 4.1 19.8 5.2 29.1zm38.5-66.7c-8.6 3.7-18 7-27.7 10.1-5.7-19.6-13.2-40-22.5-60.9 9.2-20.8 16.6-41.1 22.2-60.6 9.9 3.1 19.3 6.5 28.1 10.2 35.4 15.1 58.3 34.9 58.3 50.6-.1 15.7-23 35.6-58.4 50.6zM320.8 78.4z"/><circle cx="420.9" cy="296.5" r="45.7"/><path d="M520.5 78.1z"/></g></svg>
+</file>
+
+<file path="src/pages/AllLeadsPage.js">
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, onSnapshot, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+import Sidebar from '../components/Sidebar';
+
+const AllLeadsPage = () => {
+  const [leads, setLeads] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [search, setSearch] = useState('');
+
+  const [editingLead, setEditingLead] = useState(null);
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', abbreviation: '' });
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    const unsubLeads = onSnapshot(
+      query(collection(db, 'leads'), where('ownerUid', '==', auth.currentUser?.uid)),
+      (snapshot) => {
+        const loaded = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setLeads(loaded);
+      }
+    );
+    return () => unsubLeads();
+  }, []);
+
+  const handleSelect = (leadId) => {
+    setSelected(prev => prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]);
+  };
+
+  const handleDeleteSelected = async () => {
+    const confirm = window.confirm(`Ви впевнені, що хочете видалити ${selected.length} обраних записів?`);
+    if (!confirm) return;
+
+    for (const id of selected) {
+      await deleteDoc(doc(db, 'leads', id));
+    }
+    setSelected([]);
+  };
+
+  const openEditModal = (lead) => {
+    setEditingLead(lead);
+    setForm({
+      firstName: lead.firstName || '',
+      lastName: lead.lastName || '',
+      email: lead.email || '',
+      abbreviation: lead.abbreviation || ''
+    });
+    setIsClosing(false);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeEditModal = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setEditingLead(null);
+      document.body.style.overflow = 'unset';
+    }, 250);
+  };
+
+  const handleFormChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveLead = async () => {
+    try {
+      const docRef = doc(db, 'leads', editingLead.id);
+      await updateDoc(docRef, form);
+      closeEditModal();
+    } catch (err) {
+      console.error('Помилка оновлення викладача:', err);
+      alert('Не вдалося зберегти зміни.');
+    }
+  };
+
+  const handleDeleteSingleLead = async () => {
+    const confirm = window.confirm(`Видалити викладача ${form.firstName} ${form.lastName} із системи?`);
+    if (!confirm) return;
+
+    try {
+      await deleteDoc(doc(db, 'leads', editingLead.id));
+      closeEditModal();
+    } catch (err) {
+      console.error('Помилка видалення викладача:', err);
+      alert('Не вдалося видалити запис.');
+    }
+  };
+
+  const filteredLeads = leads.filter((lead) => {
+    const term = search.toLowerCase();
+    return (
+      lead.firstName?.toLowerCase().includes(term) ||
+      lead.lastName?.toLowerCase().includes(term) ||
+      lead.email?.toLowerCase().includes(term) ||
+      lead.abbreviation?.toLowerCase().includes(term)
+    );
+  });
+
+  return (
+    <div className="main-container">
+      <Sidebar />
+      
+      <style>
+        {`
+          @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          @keyframes modalExit {
+            from { opacity: 1; transform: scale(1) translateY(0); }
+            to { opacity: 0; transform: scale(0.9) translateY(20px); }
+          }
+          @keyframes backdropEnter {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
+          }
+          @keyframes backdropExit {
+            from { opacity: 1; backdrop-filter: blur(8px); }
+            to { opacity: 0; backdrop-filter: blur(0px); }
+          }
+          .premium-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+          }
+          .premium-input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+            outline: none;
+          }
+          .table-row {
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+          }
+          .table-row:hover {
+            background-color: #f8fafc;
+          }
+          .table-row.selected {
+            background-color: #eff6ff;
+          }
+          .table-row.selected:hover {
+            background-color: #dbeafe;
+          }
+          /* Фікс з'їжджання: використовуємо внутрішню тінь замість додаткової колонки */
+          .table-row.selected td:first-child {
+            box-shadow: inset 4px 0 0 0 var(--primary);
+          }
+        `}
+      </style>
+
+      <div className="content-container" style={{ flex: 1, padding: '40px 60px', overflowY: 'auto' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h2>Глобальний довідник викладачів</h2>
+
+          <div className="leads-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', marginBottom: '30px' }}>
+            <input
+              type="text"
+              placeholder="Пошук за іменем, поштою або скороченням..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-input"
+              style={{ width: '100%', maxWidth: '400px', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff' }}
+            />
+            {selected.length > 0 && (
+              <button onClick={handleDeleteSelected} className="delete-button" style={{ padding: '12px 20px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', transition: 'var(--transition)', boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)' }}>
+                🗑 Видалити обрані ({selected.length})
+              </button>
+            )}
+          </div>
+
+          {filteredLeads.length > 0 ? (
+            <div className="leads-table">
+              <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, background: '#fff', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid #e2e8f0' }}>
+                <thead>
+                  <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                    <th style={{ padding: '16px', width: '40px', textAlign: 'center' }}></th>
+                    <th style={{ padding: '16px', textAlign: 'left' }}>Скорочення</th>
+                    <th style={{ padding: '16px', textAlign: 'left' }}>Ім'я</th>
+                    <th style={{ padding: '16px', textAlign: 'left' }}>Прізвище</th>
+                    <th style={{ padding: '16px', textAlign: 'left' }}>Email</th>
+                    <th style={{ padding: '16px', textAlign: 'right' }}>Дії</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredLeads.map(lead => {
+                    const isSelected = selected.includes(lead.id);
+                    return (
+                      <tr key={lead.id} className={`table-row ${isSelected ? 'selected' : ''}`}>
+                        {/* Прибрали зайвий td, тепер все малюється через CSS */}
+                        <td style={{ padding: '16px', textAlign: 'center', verticalAlign: 'middle' }}>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleSelect(lead.id)}
+                            style={{ width: '16px', height: '16px', accentColor: 'var(--primary)', cursor: 'pointer' }}
+                          />
+                        </td>
+                        <td style={{ padding: '16px', fontWeight: '700', color: '#0f172a', verticalAlign: 'middle' }}>
+                          <span style={{ background: isSelected ? '#dbeafe' : '#f1f5f9', padding: '4px 10px', borderRadius: '6px', fontSize: '13px', transition: 'var(--transition)' }}>
+                            {lead.abbreviation || '—'}
+                          </span>
+                        </td>
+                        <td style={{ padding: '16px', verticalAlign: 'middle', color: isSelected ? '#1e40af' : 'inherit' }}>{lead.firstName}</td>
+                        <td style={{ padding: '16px', verticalAlign: 'middle', color: isSelected ? '#1e40af' : 'inherit' }}>{lead.lastName}</td>
+                        <td style={{ padding: '16px', verticalAlign: 'middle', color: isSelected ? '#3b82f6' : '#475569' }}>{lead.email}</td>
+                        <td style={{ padding: '16px', textAlign: 'right', verticalAlign: 'middle' }}>
+                          <button
+                            onClick={() => openEditModal(lead)}
+                            title="Редагувати дані викладача"
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                              width: '32px', height: '32px', background: isSelected ? '#bfdbfe' : '#f1f5f9', color: isSelected ? '#1d4ed8' : '#475569',
+                              border: 'none', borderRadius: '8px', cursor: 'pointer', transition: 'var(--transition)'
+                            }}
+                            onMouseOver={e => { e.currentTarget.style.backgroundColor = 'var(--primary)'; e.currentTarget.style.color = '#fff'; }}
+                            onMouseOut={e => { e.currentTarget.style.backgroundColor = isSelected ? '#bfdbfe' : '#f1f5f9'; e.currentTarget.style.color = isSelected ? '#1d4ed8' : '#475569'; }}
+                          >
+                            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p style={{ color: '#64748b', marginTop: '20px' }}>Викладачів не знайдено.</p>
+          )}
+        </div>
+      </div>
+
+      {editingLead && (
+        <div 
+          onClick={closeEditModal} 
+          style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(15, 23, 42, 0.4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 9999,
+            animation: `${isClosing ? 'backdropExit' : 'backdropEnter'} 0.25s ease-out forwards`
+          }}
+        >
+          <div 
+            onClick={e => e.stopPropagation()} 
+            style={{
+              width: '100%', maxWidth: '440px',
+              background: '#ffffff',
+              borderRadius: '24px',
+              padding: '40px 32px 32px',
+              position: 'relative',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(79, 70, 229, 0.1)',
+              animation: `${isClosing ? 'modalExit' : 'modalEnter'} 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards`
+            }}
+          >
+            <div style={{
+              position: 'absolute', top: '-30px', left: '50%', transform: 'translateX(-50%)',
+              width: '64px', height: '64px',
+              background: 'linear-gradient(135deg, var(--primary) 0%, #3730a3 100%)',
+              borderRadius: '18px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white',
+              boxShadow: '0 10px 25px rgba(79, 70, 229, 0.4)',
+              rotate: '3deg'
+            }}>
+              <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            
+            <button 
+              onClick={closeEditModal}
+              style={{
+                position: 'absolute', top: '20px', right: '20px',
+                background: '#f1f5f9', border: 'none',
+                width: '32px', height: '32px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.color = '#0f172a'; }}
+              onMouseOut={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              ✕
+            </button>
+
+            <div style={{ textAlign: 'center', marginBottom: '28px', marginTop: '10px' }}>
+              <h3 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--bg-sidebar)', margin: '0 0 6px 0', letterSpacing: '-0.5px' }}>
+                Картка викладача
+              </h3>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '28px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                  Скорочення (Код викладача)
+                </label>
+                <input 
+                  name="abbreviation" 
+                  type="text"
+                  value={form.abbreviation} 
+                  onChange={handleFormChange} 
+                  className="premium-input"
+                  placeholder="напр. ВЕР"
+                  style={{ fontWeight: '700', letterSpacing: '0.5px' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '16px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                    Ім'я
+                  </label>
+                  <input 
+                    name="firstName" 
+                    type="text"
+                    value={form.firstName} 
+                    onChange={handleFormChange} 
+                    className="premium-input"
+                    placeholder="Василь"
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                    Прізвище
+                  </label>
+                  <input 
+                    name="lastName" 
+                    type="text"
+                    value={form.lastName} 
+                    onChange={handleFormChange} 
+                    className="premium-input"
+                    placeholder="Роїк"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px', color: 'var(--text-muted)', marginLeft: '4px' }}>
+                  Email адреса
+                </label>
+                <input 
+                  name="email" 
+                  type="email"
+                  value={form.email} 
+                  onChange={handleFormChange} 
+                  className="premium-input"
+                  placeholder="v.roik@lpnu.ua"
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button 
+                onClick={handleSaveLead} 
+                style={{ 
+                  width: '100%', padding: '15px', 
+                  background: 'linear-gradient(135deg, var(--primary) 0%, #3730a3 100%)', 
+                  color: 'white', border: 'none', borderRadius: '12px', 
+                  fontSize: '15px', fontWeight: '700', cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)', transition: 'all 0.2s'
+                }}
+                onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                💾 Зберегти зміни
+              </button>
+              
+              <button 
+                onClick={handleDeleteSingleLead} 
+                style={{ 
+                  width: '100%', padding: '12px', 
+                  background: 'transparent', color: '#ef4444', 
+                  border: '2px solid transparent', borderRadius: '12px', 
+                  fontWeight: '600', fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s'
+                }}
+                onMouseOver={e => { e.currentTarget.style.background = '#fee2e2'; e.currentTarget.style.borderColor = '#fca5a5'; }}
+                onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent'; }}
+              >
+                Видалити з бази
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AllLeadsPage;
+</file>
+
+<file path="src/pages/CampaignSettingsPage.js">
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import Sidebar from '../components/Sidebar';
+import LeadsUploader from '../components/LeadsUploader';
+import LeadsTable from '../components/LeadsTable';
+import CampaignOptions from '../components/CampaignOptions';
+// 🔥 Імпортуємо наш новий компонент:
+import SendHistory from '../components/SendHistory';
+
+// 🔥 Додали третю вкладку:
+const tabs = [
+  { id: 'Leads', label: '👥 Викладачі' },
+  { id: 'Send Data', label: '🚀 Відправка навантаження' },
+  { id: 'History', label: '🕒 Історія розсилок' }
+];
+
+const CampaignSettingsPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [campaign, setCampaign] = useState(null);
+  const [activeTab, setActiveTab] = useState('Leads');
+
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      const docRef = doc(db, 'campaigns', id);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        setCampaign({ id: snap.id, ...snap.data() });
+      }
+    };
+    fetchCampaign();
+  }, [id]);
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'Leads':
+        return (
+          <>
+            <LeadsUploader campaignId={campaign.id} />
+            <LeadsTable campaignId={campaign.id} />
+          </>
+        );
+      case 'Send Data':
+        return <CampaignOptions campaignId={campaign.id} />;
+      case 'History':
+        // 🔥 Рендеримо вкладку історії:
+        return <SendHistory campaignId={campaign.id} />;
+      default:
+        return null;
+    }
+  };
+
+  if (!campaign) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text-muted)' }}>
+        Завантаження налаштувань...
+      </div>
+    );
+  }
+
+  return (
+    <div className="main-container">
+      <Sidebar />
+      <div className="campaign-settings">
+        <div className="campaign-settings-inner">
+          
+          <button className="back-link" onClick={() => navigate('/campaigns')}>
+            ← Назад до кампаній
+          </button>
+          
+          <h2>{campaign.name}</h2>
+          
+          <div className="tabs">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                className={activeTab === tab.id ? 'tab active' : 'tab'}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          
+          <div className="tab-content">
+            {renderContent()}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CampaignSettingsPage;
+</file>
+
+<file path="src/pages/CampaignsPage.js">
+import React from 'react';
+import Sidebar from '../components/Sidebar';
+import CampaignList from '../components/CampaignList';
+
+const CampaignsPage = () => {
+  return (
+    <div className="main-container">
+      <Sidebar />
+      <CampaignList />
+    </div>
+  );
+};
+
+export default CampaignsPage;
+</file>
+
+<file path="src/pages/EmailsPage.js">
+import React from 'react';
+import Sidebar from '../components/Sidebar';
+import EmailList from '../components/EmailList';
+
+const EmailsPage = () => {
+  return (
+    <div className="main-container">
+      <Sidebar />
+      <EmailList />
+    </div>
+  );
+};
+
+export default EmailsPage;
+</file>
+
+<file path="src/pages/LandingPage.js">
+import React from 'react';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../firebase';
+import '../styles/landing.css';
+
+const LandingPage = () => {
+  const signIn = () => {
+    signInWithPopup(auth, provider).catch(console.error);
+  };
+
+  return (
+    <div className="landing-page">
+      <div className="landing-form-container">
+        {/* Іконка бренду */}
+        <div style={{ fontSize: '48px', marginBottom: '20px' }}>🚀</div>
+        
+        <h1>UniSync</h1>
+        <p>Автоматизуй розподіл навантаження за секунди</p>
+        
+        <button className="google-btn" onClick={signIn}>
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" 
+            alt="Google" style={{ width: '20px' }} 
+          />
+          Продовжити з Google
+        </button>
+
+        <p style={{ fontSize: '12px', marginTop: '24px', color: '#94a3b8' }}>
+          Входячи в систему, ви погоджуєтесь з правилами використання сервісу.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default LandingPage;
+</file>
+
+<file path="src/reportWebVitals.js">
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+</file>
+
+<file path="src/setupTests.js">
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+</file>
+
+</files>

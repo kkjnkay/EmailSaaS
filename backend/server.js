@@ -1,55 +1,116 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const imaps = require('imap-simple');
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-app.post('/check-email', async (req, res) => {
-  const {
-    email,
-    imapHost,
-    imapPort,
-    imapPassword,
-    smtpHost,
-    smtpPort,
-    smtpPassword
-  } = req.body;
+// 🔥 ДОЗВОЛЯЄМО ЗАПИТИ З ІНШИХ ДОМЕНІВ (щоб фронтенд на Vercel міг сюди стукати)
+app.use(cors({
+    origin: '*', 
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-  try {
-    // IMAP перевірка
-    const imapConfig = {
-      imap: {
-        user: email,
-        password: imapPassword,
-        host: imapHost,
-        port: parseInt(imapPort),
-        tls: true,
-        authTimeout: 5000
-      }
-    };
-    const imapConnection = await imaps.connect(imapConfig);
-    await imapConnection.end();
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-    // SMTP перевірка
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: parseInt(smtpPort),
-      secure: parseInt(smtpPort) === 465,
-      auth: {
-        user: email,
-        pass: smtpPassword
-      }
-    });
-    await transporter.verify();
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error('🔴 Перевірка неуспішна:', err.message);
-    res.status(400).json({ success: false, error: err.message });
-  }
+// 🔥 БАЗОВИЙ РОУТ ДЛЯ RENDER (Render буде перевіряти, чи сервер живий)
+app.get('/', (req, res) => {
+    res.send('UniSync Backend is running! 🚀');
 });
 
-app.listen(3001, () => console.log('✅ Email Check API запущено на http://localhost:3001'));
+// Ендпоінт для перевірки підключення (працює з AddEmailForm.js)
+app.post('/check-email', async (req, res) => {
+    const { email, appPassword } = req.body;
+
+    if (!email || !appPassword) {
+        return res.status(400).send({ success: false, error: 'Введіть email та пароль' });
+    }
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: email,
+                pass: appPassword 
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        // verify() намагається залогінитись на SMTP сервер
+        await transporter.verify();
+        
+        console.log(`✅ Підключення успішне для: ${email}`);
+        res.status(200).send({ success: true, message: 'З\'єднання успішне' });
+    } catch (error) {
+        console.error(`❌ Помилка перевірки пошти ${email}:`, error.message);
+        res.status(401).send({ success: false, error: error.message });
+    }
+});
+
+// Ендпоінт для відправки розсилки
+app.post('/api/send-single', async (req, res) => {
+    const { senderAccount, subject, emailData } = req.body;
+
+    // Гнучка перевірка пароля, бо він може зберігатися під різними ключами
+    const password = senderAccount?.smtpPassword || senderAccount?.appPassword || senderAccount?.password;
+
+    if (!senderAccount || !senderAccount.email || !password) {
+        console.error('❌ Помилка: Неповні дані аккаунта відправника у запиті.');
+        return res.status(400).send({ 
+            success: false, 
+            error: 'Відсутні обов\'язкові дані авторизації (email або пароль) в БД.' 
+        });
+    }
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: senderAccount.smtpHost || 'smtp.gmail.com',
+            port: parseInt(senderAccount.smtpPort) || 465,
+            secure: parseInt(senderAccount.smtpPort) === 465, 
+            auth: {
+                user: senderAccount.email,
+                pass: password 
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        // Формуємо ім'я відправника
+        const senderName = `${senderAccount.firstName || ''} ${senderAccount.lastName || ''}`.trim() || 'Розподіл навантаження';
+
+        await transporter.sendMail({
+            from: `"${senderName}" <${senderAccount.email}>`,
+            to: emailData.to,
+            subject: subject,
+            html: emailData.htmlBody
+        });
+
+        console.log(`✅ Лист успішно надіслано на адресу: ${emailData.to}`);
+        res.status(200).send({ success: true, message: 'Лист успішно надіслано' });
+
+    } catch (error) {
+        console.error(`❌ Помилка SMTP при спробі відправки для ${emailData.to}:`, error);
+        res.status(500).send({ 
+            success: false, 
+            error: error.message,
+            code: error.code
+        });
+    }
+});
+
+// ДИНАМІЧНИЙ ПОРТ ДЛЯ RENDER
+const PORT = process.env.PORT || 3001;
+
+// 🔥 Важливо для Render: слухати '0.0.0.0'
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`==================================================`);
+    console.log(`🚀 Бекенд розсилки UniSync успішно запущено!`);
+    console.log(`📡 Сервер очікує на запити на порту: ${PORT}`);
+    console.log(`==================================================`);
+});

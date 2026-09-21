@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/App.css';
+
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;

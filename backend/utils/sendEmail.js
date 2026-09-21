@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-async function sendEmail({ smtpHost, smtpPort, smtpUser, smtpPass, to, subject, body }) {
+async function sendEmail({ smtpHost, smtpPort, smtpUser, smtpPass, to, subject, htmlBody }) {
   const transporter = nodemailer.createTransport({
     host: smtpHost,
     port: parseInt(smtpPort),
@@ -15,7 +15,7 @@ async function sendEmail({ smtpHost, smtpPort, smtpUser, smtpPass, to, subject, 
     from: smtpUser,
     to,
     subject,
-    text: body,
+    html: htmlBody, // Відправляємо HTML замість звичайного тексту
   });
 }
 

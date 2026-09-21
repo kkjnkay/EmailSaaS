@@ -10,7 +10,7 @@ import { db, auth } from '../firebase';
 import CampaignCard from './CampaignCard';
 import Modal from './Modal';
 import AddCampaignForm from './AddCampaignForm';
-import '../styles/App.css';
+
 
 const CampaignList = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -81,9 +81,11 @@ const CampaignList = () => {
         />
       ))}
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <AddCampaignForm onSuccess={handleAddSuccess} />
-      </Modal>
+      <AddCampaignForm 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSuccess={handleAddSuccess} 
+      />
     </div>
   );
 };
